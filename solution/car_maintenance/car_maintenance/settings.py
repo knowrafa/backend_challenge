@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     # libs
     'corsheaders',
 
-    # 'cachalot', # enable for caching
     'rest_framework',
 
     'car',
@@ -84,7 +83,6 @@ DATABASES = {
     },
 }
 
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -110,7 +108,6 @@ REST_FRAMEWORK = {
         'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
     ),
     'EXCEPTION_HANDLER': 'utils.handlers.exceptions.custom_exception_handler',
-
 
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
