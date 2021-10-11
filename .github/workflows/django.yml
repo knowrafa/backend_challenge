@@ -11,7 +11,7 @@ jobs:
   build:
     defaults:
       run:
-        working-directory: ./solution
+        working-directory: ./solution/car_maintenance
     env:
       SECRET_KEY: 'test-enviroment-django'
       DATABASE_NAME: "test"
