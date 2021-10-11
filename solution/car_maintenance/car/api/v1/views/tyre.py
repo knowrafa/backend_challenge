@@ -54,8 +54,6 @@ class TyreViewSet(
         Method for swapping tyres
         Receives a pk tyre in params and pk tyre in request body.
         Evaluates if they can be swapped, then performs the swap
-        :param request: Request
-        :param pk: Tyre to be swapped
         """
         new_tyre = self.get_queryset().get(pk=request.data.get("tyre"))
         self.perform_swap(self.get_object(), new_tyre)

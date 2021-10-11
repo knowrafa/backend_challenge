@@ -78,8 +78,6 @@ class CarViewSet(
     ):
         """
         Update tyre degradation
-        :param kilometers: trip distance
-        :param car: Car instance to update the tyres
         """
         for tyre in car.tyres.filter(in_use=True):
             create_update_object_serializer(
@@ -118,6 +116,9 @@ class CarViewSet(
     @swagger_auto_schema(request_body=CarTripSerializer, responses={200: CarSerializer})
     @transaction.atomic
     def trip(self, request, pk=None):
+        """
+        View that performs a trip, based on car and kilometers to travel
+        """
         self.perform_trip(
             self.get_object(),
             request.data.get("kilometers"),
@@ -132,6 +133,9 @@ class CarViewSet(
     )
     @transaction.atomic
     def refuel(self, request, pk=None):
+        """
+        View that performs car refuelling, receives liters in body
+        """
         self.perform_refuel(
             self.get_object(),
             request.data.get("liters"),

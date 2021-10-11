@@ -16,7 +16,7 @@ def validate_in_use_tyre(car):
 @deconstructible
 class MaxGasCountValidator(BaseValidator):
     message = _(
-        "Your gas count cant be cannot be greater than %(limit_value)s. Refuel your car or take a shorter trip."
+        "Your gas count cant be cannot be greater than %(limit_value)s. Refuel your car with less liters."
     )
     code = "max_gas_count"
 
