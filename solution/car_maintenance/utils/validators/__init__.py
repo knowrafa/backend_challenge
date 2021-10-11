@@ -1,1 +1,2 @@
-from .validators import CPFValidator, UsernameValidator, PorcentagemValidator, IntPositivoValidator
+from .validators import PorcentagemValidator
+
