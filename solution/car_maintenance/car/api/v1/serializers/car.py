@@ -6,7 +6,8 @@ from rest_framework.exceptions import ValidationError
 
 from car.api.v1.serializers import TyreSerializer
 from car.models import CarModel, TyreModel
-from utils.serializers import create_object_serializer
+from utils.serializers import create_update_object_serializer
+from utils.validators.car import validate_in_use_tyre
 
 
 class CarSerializer(ModelActionSerializer):
@@ -31,7 +32,7 @@ class CarSerializer(ModelActionSerializer):
         instance = super(CarSerializer, self).create(validated_data)
 
         for count in range(0, 4):
-            create_object_serializer(
+            create_update_object_serializer(
                 TyreSerializer,
                 data={
                     "car": instance.pk,
@@ -45,21 +46,15 @@ class CarSerializer(ModelActionSerializer):
         tyres = validated_data.pop("tyres", [])
 
         for tyre in tyres:
-            if tyre.get("in_use", True):
-                if not instance.can_create_in_use_tyre:
-                    raise ValidationError(
-                        {
-                            "invalid": "You cannot create another tyre, this car is already with 4 in use",
-                        }
-                    )
-            create_object_serializer(TyreSerializer, data={"car": instance.pk, **tyre})
+            if tyre.get("in_use", False):
+                validate_in_use_tyre(instance)
+
+            create_update_object_serializer(
+                TyreSerializer, data={"car": instance.pk, **tyre}
+            )
         return super(CarSerializer, self).update(
             instance=instance, validated_data=validated_data
         )
-
-    @transaction.atomic
-    def perform_trip(self):
-        pass
 
 
 class CarRefuelSerializer(serializers.Serializer):
