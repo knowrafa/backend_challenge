@@ -10,8 +10,8 @@ jobs:
   
   build:
     defaults:
-          run:
-            working-directory: solution
+      run:
+        working-directory: ./solution
     env:
       SECRET_KEY: 'test-enviroment-django'
       DATABASE_NAME: "test"
