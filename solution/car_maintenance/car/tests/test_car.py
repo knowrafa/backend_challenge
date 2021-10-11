@@ -22,10 +22,6 @@ class TestCar(TestCase):
         self.login_user()
         self.payload = {
             "name": "Test Car",
-            "manufacturer": "Test Company",
-            "year": 2020,
-            "price": 250000,
-            "description": "Test Description",
             "gas_capacity": 150,
         }
         self.car = CarModel.objects.create(**self.payload)

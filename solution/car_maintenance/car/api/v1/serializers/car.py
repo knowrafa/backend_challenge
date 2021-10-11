@@ -18,10 +18,6 @@ class CarSerializer(ModelActionSerializer):
         fields = (
             "id",
             "name",
-            "manufacturer",
-            "year",
-            "price",
-            "description",
             "gas_capacity",
             "gas_count",
             "tyres",
