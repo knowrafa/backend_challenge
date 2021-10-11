@@ -14,11 +14,11 @@ services:
         command: bash -c "
             && python manage.py migrate
             && python manage.py collectstatic --noinput
-            && python manage.py runserver 0.0.0.0:8000"
+            && python manage.py runserver 0.0.0.0:8050"
         volumes:
             - .:/code
         ports:
-            - "8000:8000"
+            - "8050:8050"
         depends_on:
             - db
 
