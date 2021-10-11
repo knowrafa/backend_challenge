@@ -1,14 +1,17 @@
-from django.core.validators import MaxValueValidator
+from django.db import models
 
 from utils.mixins.models import TimeManagerMixin
-from django.db import models
+from utils.validators import MaxDegradationValidator
 
 
 class TyreModel(TimeManagerMixin):
-    TYRE_DEGRADATION_FOR_CHANGE = 94  # 94% of degradation
+    TYRE_DEGRADATION_FOR_CHANGE = 94  # % of degradation
+    DEGRADATION_BY_KILOMETER = 3  # Degrades 1% per
 
-    car = models.ForeignKey('CarModel', related_name='tyres', on_delete=models.CASCADE)
-    degradation = models.FloatField(validators=[MaxValueValidator(100)], default=0)
+    car = models.ForeignKey("CarModel", related_name="tyres", on_delete=models.CASCADE)
+    degradation = models.FloatField(
+        validators=[MaxDegradationValidator(100)], default=0
+    )
     in_use = models.BooleanField(default=False)
 
     class Meta:

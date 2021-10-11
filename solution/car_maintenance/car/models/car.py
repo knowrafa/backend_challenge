@@ -3,10 +3,13 @@ from django.db import models
 
 from utils.mixins.models import TimeManagerMixin
 from utils.validators import PorcentagemValidator
+from utils.validators import MinGasCountValidator, MaxGasCountValidator
 
 
 class CarModel(TimeManagerMixin):
     ACCEPTED_FOR_REFUEL = 5  # 5% of gas
+
+    CONSUME_BY_LITER = 8.0  # 8km per litre
 
     name = models.CharField(max_length=50)
     manufacturer = models.CharField(max_length=50, null=True, blank=True)
@@ -15,7 +18,7 @@ class CarModel(TimeManagerMixin):
     description = models.TextField(null=True, blank=True)
     gas_capacity = models.FloatField()
     gas_count = models.FloatField(
-        validators=[MinValueValidator(0), MaxValueValidator(100)], default=100
+        validators=[MinGasCountValidator(0), MaxGasCountValidator(100)], default=100
     )
 
     class Meta:
