@@ -1,1 +1,1 @@
-from .create import create_object_serializer
+from .create import create_update_object_serializer
