@@ -32,12 +32,12 @@ class CPFValidator(object):
 
 @deconstructible
 class PorcentagemValidator:
-    def __call__(self, fio2):
+    def __call__(self, gas_count):
         try:
-            if not (0 <= fio2 <= 100):
-                raise ValidationError(f'{fio2} deve estar entre 0 e 100', params={'fio2': fio2})
+            if not (0 <= gas_count <= 100):
+                raise ValidationError(f'{gas_count} deve estar entre 0 e 100', params={'fio2': gas_count})
         except TypeError:
-            raise ValidationError(f'{fio2} deve ser um número', params={'fio2': fio2})
+            raise ValidationError(f'{gas_count} deve ser um número', params={'fio2': gas_count})
 
 
 @deconstructible
