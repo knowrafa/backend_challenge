@@ -1,33 +1,5 @@
-from django.core import validators
 from django.core.exceptions import ValidationError
 from django.utils.deconstruct import deconstructible
-from django.utils.translation import ugettext_lazy as _
-
-
-@deconstructible
-class CPFValidator(object):
-    def __call__(self, cpf):
-        cpf = cpf.replace("-", "")
-        cpf = cpf.replace(".", "")
-
-        if (not cpf) or (len(cpf) < 11):
-            raise ValidationError(_('CPF invalido'))
-
-        if cpf == len(cpf) * cpf[0]:
-            raise ValidationError(_('CPF invalido'))
-
-        inteiros = list(map(int, cpf))
-        novo = inteiros[:9]
-        while len(novo) < 11:
-            r = sum([(len(novo) + 1 - i) * v for i, v in enumerate(novo)]) % 11
-            if r > 1:
-                f = 11 - r
-            else:
-                f = 0
-            novo.append(f)
-
-        if not bool(novo == inteiros):
-            raise ValidationError(_('CPF invalido'))
 
 
 @deconstructible
@@ -35,26 +7,12 @@ class PorcentagemValidator:
     def __call__(self, gas_count):
         try:
             if not (0 <= gas_count <= 100):
-                raise ValidationError(f'{gas_count} deve estar entre 0 e 100', params={'fio2': gas_count})
+                raise ValidationError(
+                    f"{gas_count} should be between 0 and 100", params={"gas_count": gas_count}
+                )
         except TypeError:
-            raise ValidationError(f'{gas_count} deve ser um número', params={'fio2': gas_count})
+            raise ValidationError(
+                f"{gas_count} should be a number", params={"gas_count": gas_count}
+            )
 
 
-@deconstructible
-class IntPositivoValidator:
-    def __call__(self, int):
-        try:
-            if not int >= 0:
-                raise ValidationError(f'{int} deve ser maior do que 0', params={'int': int})
-        except TypeError:
-            raise ValidationError(f'{int} deve ser um número', params={'int': int})
-
-
-@deconstructible
-class UsernameValidator(validators.RegexValidator):
-    regex = r'^[\a-z0-9.@+-]+\Z'
-    message = _(
-        'Enter a valid username. This value may contain only letters in lowercase, '
-        'numbers, and @/./+/-/_ characters.'
-    )
-    flags = 0
