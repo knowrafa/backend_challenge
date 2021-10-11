@@ -18,6 +18,7 @@ class TyreModel(TimeManagerMixin):
         db_table = "tyre"
         verbose_name = "Tyre"
         verbose_name_plural = "Tyres"
+        ordering = ("-in_use",)
 
     @property
     def can_be_swapped(self):
