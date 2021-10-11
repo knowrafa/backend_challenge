@@ -1,63 +1,207 @@
-# Backend Developer Challenge
-This is a simple challenge to test your skills on building APIs and your logic.
-It has to be done using Python and Django/Django Rest Framework
+# How to run this application
 
-# What to do
-Create a Rest API that controls a car maintenance status, and the trips it performs. Note that, each litre of gas can run 8 KM and every 3 KM the tyres degrades by 1%.
+## 1. Clone this repo
+```shell
+$ git clone https://github.com/knowrafa/backend_challenge/
+```
+## 2. Download [Docker](https://docs.docker.com/engine/install/) and check if is installed.
+```shell
+$ docker -v
+```
+## 3. After installed, go do solution/car_maintenance/ directory
+```shell
+$ cd solution/car_maintenance/
+```
+## 4. Run inside this directory
+```shell
+$ docker-compose up
+```
+
+## 5. Acess http://localhost:8050/docs/swagger/ for Api Documentation and using. You can make all requisitions from swagger page.
+
+## ACTIONS
 
 
-# Objects:
-- Tyre
--- Should have its degradation status in %
-- Car
--- Should have 4 tyres
--- Should have its total gas capacity in liter
--- Should have its current gas count in %
 
-# Actions:
-- Trip
--- Input: car, distance (in KM)
--- Output: Complete car status on trip end
+### CreateCar ->  POST to /api/v1/car/ with body as follows:
+```json
+{
+  "name": "Car name",
+  "gas_capacity": 200
+}
+```
 
-- Refuel
--- Input: car, gas quantity (in Litre)
--- Output: Final car gas count in %
+> - You car will be created with 200 liters of capacity, 100% of gas_count and 4 new tyres with no degradation.
 
-- Maintenance
--- Input: car, part to replace
--- Output: Complete car status
+### Trip -> POST to endpoint /api/v1/car/{car_pk}/trip/ with body as follows
+```json
+{
+  "kilometers": 10,
+}
+```
 
-- CreateCar
--- Input: None
--- Output: Complete car status
+#### In case of error, will receive a error like
 
-- GetCarStatus
--- Input: car
--- Output: Complete car status
+```json
+{
+  "errors": {
+    "degradation": [
+      "Your degradation cannot be greater than 100. Change your tyres or take a shorter trip. "
+    ]
+  },
+  "status": 400,
+  "exception": "{'degradation': [ErrorDetail(string='Your degradation cannot be greater than 100. Change your tyres or take a shorter trip. ', code='max_degradation')]}"
+}
 
-- CreateTyre
--- Input: car
--- Output: The created tyre
+```
 
-# Restrictions:
-- The car should **NOT** have more than 4 tyres in use
-- The car should **NOT** be refueled before it has less than 5% gas on tank
-- A car's tyre should **NOT** be swapped before it hits more than 94% degradation
-- A tyre should **NOT** be created while there is 4 usable tyres with less than 95% degradation
-- The car **cannot** travel without gas or one of its tyres
+> - All errors in plataform will be like above structure. Made by exception handler to padronize all error messages.
 
-# Challenge
-- Write an algorithm in the form of UnitTest that runs a trip of 10.000 KM, without breaking any part or swapping cars or gets out of gas.
-- Document your project, with instructions on how to setup and run a working example.
 
-# Recommendations
-- SOLID / DRY
-- Code and Commits in english (methods, classes, variables, etc)
+### Refuel -> POST to endpoint /api/v1/car/{car_pk}/refuel/ with body as follows
+```json
+{
+  "liters": 50,
+}
+```
 
-# Evaluation
-- Project Structure, architecturing and organization
-- Logic
-- VCS Practices
 
-# Delivery
-You must **fork** this repository and commit the solution in the **solution** folder. Your repository must be **public**. After that, sand the repository link by email to **giovani.souza@pland.com.br**
+In case of error, will receive a error like
+
+```json
+{
+  "errors": {
+    "invalid": "The car should NOT be refueled before it has less than 5% gas on tank!"
+  },
+  "status": 400,
+  "exception": "{'invalid': ErrorDetail(string='The car should NOT be refueled before it has less than 5% gas on tank!', code='invalid')}"
+}
+
+or
+
+{
+  "errors": {
+    "gas_count": [
+      "Your gas count cant be cannot be greater than 100. Refuel your car with less liters."
+    ]
+  },
+  "status": 400,
+  "exception": "{'gas_count': [ErrorDetail(string='Your gas count cant be cannot be greater than 100. Refuel your car with less liters.', code='max_gas_count')]}"
+}
+
+# or other error in same structure
+
+```
+
+### GetCarStatus -> GET in endpoint /api/v1/car/{car_pk}/
+
+Will receive a response in the following format:
+```json
+{
+  "id": 6,
+  "name": "Sample car",
+  "gas_capacity": 200,
+  "gas_count": 4,
+  "tyres": [
+    {
+      "id": 28,
+      "car": 6,
+      "degradation": 6.666666666666667,
+      "in_use": true
+    },
+    {
+      "id": 27,
+      "car": 6,
+      "degradation": 6.666666666666667,
+      "in_use": true
+    },
+    {
+      "id": 26,
+      "car": 6,
+      "degradation": 6.666666666666667,
+      "in_use": true
+    },
+    {
+      "id": 25,
+      "car": 6,
+      "degradation": 6.666666666666667,
+      "in_use": true
+    },
+    {
+      "id": 21,
+      "car": 6,
+      "degradation": 100,
+      "in_use": false
+    },
+    {
+      "id": 23,
+      "car": 6,
+      "degradation": 100,
+      "in_use": false
+    },
+  ]
+}
+```
+
+### CreateTyre -> POST to endpoint /api/v1/tyre/ with body as follows
+```json
+{
+  "car": 6,
+}
+```
+
+Response body will be
+```json
+{
+  "id": 32,
+  "car": 6,
+  "degradation": 0,
+  "in_use": false
+}
+```
+
+### For Swap Tyres -> POST to endpoint /api/v1/tyre/{tyre_pk}/swap/ with body as follows:
+
+> - tyre_pk = id of tyre to be replaced
+> - tyre = new tyre
+```json
+{
+  "tyre": 10
+}
+```
+
+In case of sucess:
+
+```json
+{
+  "id": 32,
+  "car": 6,
+  "degradation": 0,
+  "in_use": false
+}
+```
+
+In case of failure:
+
+```json
+
+{
+  "errors": {
+    "invalid": "Both tyres should be from same car. Choose only same car tyres."
+  },
+  "status": 400,
+  "exception": "{'invalid': ErrorDetail(string='Both tyres should be from same car. Choose only same car tyres.', code='invalid')}"
+}
+
+or
+
+{
+  "errors": {
+    "invalid": "You cannot create another tyre, this car is already with 4 in use"
+  },
+  "status": 400,
+  "exception": "{'invalid': ErrorDetail(string='You cannot create another tyre, this car is already with 4 in use', code='invalid')}"
+}
+
+# or other error in same structure
+```
