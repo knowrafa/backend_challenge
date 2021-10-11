@@ -59,4 +59,4 @@ jobs:
         python manage.py migrate
     - name: Run Tests and try to run
       run: |
-        python manage.py test
+        python manage.py test car.tests
